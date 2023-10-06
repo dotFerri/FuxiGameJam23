@@ -31,5 +31,15 @@ public class CarMovement : MonoBehaviour
 
         // Turn the car
         transform.Rotate(Vector3.up, turn * turnSpeed * Time.deltaTime);
+
     }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Frenchman"))
+        {
+            Destroy(collision.gameObject);
+        }
+
+    }
+
 }

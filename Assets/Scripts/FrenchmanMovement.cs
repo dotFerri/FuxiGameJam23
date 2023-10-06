@@ -7,7 +7,7 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 public class FrenchmanMovement : MonoBehaviour
 {
     public string playerObjectName = "Car";
-    public float pullForce = 10f;
+    public float FrenchmanSpeed = 10f;
     private Transform player;
 
     // Start is called before the first frame update
@@ -17,13 +17,17 @@ public class FrenchmanMovement : MonoBehaviour
             player = playerObject.transform;
     }
 
+
     // Update is called once per frame
     void FixedUpdate()
     {
         if (player != null)
         {
             Vector3 directionToPlayer = player.position - transform.position;
-            GetComponent<Rigidbody>().AddForce(directionToPlayer.normalized * pullForce, ForceMode.Force);
+            GetComponent<Rigidbody>().AddForce(directionToPlayer.normalized * FrenchmanSpeed, ForceMode.Force);
+
         }
+
     }
+
 }
