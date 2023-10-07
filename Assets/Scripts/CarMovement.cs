@@ -7,7 +7,6 @@ public class CarMovement : MonoBehaviour
 
     public float movementSpeed;
     public float turnSpeed;
-
     private Vector3 velocity;
 
     // Update is called once per frame
