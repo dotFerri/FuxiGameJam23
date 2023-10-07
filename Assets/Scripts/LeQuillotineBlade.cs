@@ -31,7 +31,7 @@ public class LeQuillotineBlade : MonoBehaviour
                 StartCoroutine(BladeFall(other.gameObject));
                 isRewinding = true;
             }
-            if (other.gameObject.CompareTag("Car"))
+            else if (other.gameObject.CompareTag("Car"))
             {
                 Debug.Log("Drop blade on Car");
                 StartCoroutine(BladeFall(other.gameObject));
