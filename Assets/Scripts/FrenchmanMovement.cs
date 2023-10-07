@@ -11,6 +11,7 @@ public class FrenchmanMovement : MonoBehaviour
     public float dodgeForce = -2f;
     private Transform player;
     private Rigidbody rb;
+    public bool isDodging = false;
 
     // Start is called before the first frame update
     void Start()
@@ -29,38 +30,39 @@ public class FrenchmanMovement : MonoBehaviour
             Vector3 directionToPlayer = player.position - transform.position;
             float distanceToPlayer = directionToPlayer.magnitude;
 
-            if (distanceToPlayer > 15)
+            if ((distanceToPlayer > 30) && (isDodging == false))  // If the Frenchmen are further than 30 meters from the target, they´ll move a bit more slow
             {
                 Vector3 towardPlayerDirection = directionToPlayer.normalized;   // Calculate a direction toward the player
                 rb.velocity = towardPlayerDirection * pullForce;    // Set the velocity to chase after the player
+                rb.freezeRotation = true;
 
             }
-            else if ((distanceToPlayer <= 15f) && (distanceToPlayer > 3))
+            else if ((distanceToPlayer <= 30) && (distanceToPlayer > 3) && (isDodging == false))   // And they´ll sprint towards the player once they are close enough
             {
                 // Dodge maneuver
-                Vector3 towardPlayerDirection = directionToPlayer.normalized;   // Calculate a direction toward the player
-                rb.velocity = towardPlayerDirection * pullForce * 10;    // Set the velocity to chase after the player
+                Vector3 towardPlayerDirection = directionToPlayer.normalized;
+                rb.velocity = towardPlayerDirection * pullForce * 2;    // Set the velocity to chase after the player
                 rb.freezeRotation = true;
   //              Debug.Log("CHASE");
             }
-            else if (distanceToPlayer <= 3)
+            // UNFINISHED - -
+            else if (distanceToPlayer <= 2)     // They should try to dodge the player if the player car is coming straight towards...
             {
-                Vector3 towardPlayerDirection = -directionToPlayer.normalized;   // Calculate a direction toward the player
-                rb.velocity = towardPlayerDirection * -pullForce * 2;    // Set the velocity to chase after the player
-                rb.freezeRotation = false;
+                isDodging = true;
+                
+                Vector3 towardPlayerDirection = directionToPlayer.normalized;   // Calculate a direction toward the player
+                rb.velocity = towardPlayerDirection * pullForce * -2;    // Set the velocity to chase after the player
+                rb.freezeRotation = true;
  //               Debug.Log("DODGE!");
-
- 
             }
-            else
+ /*           else
             {
                 // Calculate the desired velocity based on pullForce
                 Vector3 desiredVelocity = directionToPlayer.normalized * pullForce;
-
                 // Set the velocity of the Rigidbody
                 rb.velocity = desiredVelocity;
             }
-        }
+   */     }
        
     }
     private void OnCollisionEnter(Collision collision)
