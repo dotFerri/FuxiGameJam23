@@ -6,78 +6,51 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class FrenchmanMovement : MonoBehaviour
 {
-    public string playerObjectName = "Car";
-    public float pullForce = 1f;
-    public float dodgeForce = -2f;
+    public float followForce = 1f;
+    public float dodgeForce = 2f;
+    public float followRadius = 30f;
+    public float dodgeRadius = 2f;
+    public float lethalHitThreshold = 8f;
+
     private Transform player;
     private Rigidbody rb;
-    public bool isDodging = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        GameObject playerObject = GameObject.Find(playerObjectName);
-        player = playerObject.transform;
         rb = GetComponent<Rigidbody>();
-
+        player = FindObjectOfType<CarMovement>().transform;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (player != null)
+        if (player)
         {
             Vector3 directionToPlayer = player.position - transform.position;
             float distanceToPlayer = directionToPlayer.magnitude;
+            float movementSpeed = followForce;
+            if (distanceToPlayer > followRadius)
+            {
+                // Move at X/2 (50%) speed.
+                movementSpeed /= 2;
+            }
+            else if (distanceToPlayer < dodgeRadius)
+            {
+                // Change movement speed to the opposite direction.
+                movementSpeed = -dodgeForce;
+            }
+            rb.velocity = directionToPlayer.normalized * movementSpeed;
+        }
 
-            if ((distanceToPlayer > 30) && (isDodging == false))  // If the Frenchmen are further than 30 meters from the target, they´ll move a bit more slow
-            {
-                Vector3 towardPlayerDirection = directionToPlayer.normalized;   // Calculate a direction toward the player
-                rb.velocity = towardPlayerDirection * pullForce;    // Set the velocity to chase after the player
-                rb.freezeRotation = true;
-
-            }
-            else if ((distanceToPlayer <= 30) && (distanceToPlayer > 3) && (isDodging == false))   // And they´ll sprint towards the player once they are close enough
-            {
-                // Dodge maneuver
-                Vector3 towardPlayerDirection = directionToPlayer.normalized;
-                rb.velocity = towardPlayerDirection * pullForce * 2;    // Set the velocity to chase after the player
-                rb.freezeRotation = true;
-  //              Debug.Log("CHASE");
-            }
-            // UNFINISHED - -
-            else if (distanceToPlayer <= 2)     // They should try to dodge the player if the player car is coming straight towards...
-            {
-                isDodging = true;
-                
-                Vector3 towardPlayerDirection = directionToPlayer.normalized;   // Calculate a direction toward the player
-                rb.velocity = towardPlayerDirection * pullForce * -2;    // Set the velocity to chase after the player
-                rb.freezeRotation = true;
- //               Debug.Log("DODGE!");
-            }
- /*           else
-            {
-                // Calculate the desired velocity based on pullForce
-                Vector3 desiredVelocity = directionToPlayer.normalized * pullForce;
-                // Set the velocity of the Rigidbody
-                rb.velocity = desiredVelocity;
-            }
-   */     }
-       
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision != null)
+        CarMovement car = collision.gameObject.GetComponent<CarMovement>();
+        if (car && collision.relativeVelocity.magnitude < lethalHitThreshold)
         {
-            if (collision.gameObject.GetComponent<CarMovement>())
-            {
-                if (collision.gameObject.GetComponent<CarMovement>().isLethal == true)
-                {
-                    rb.freezeRotation = false;
-                    Destroy(gameObject, 1.5f);
-//                    Debug.Log("DESTROY");
-                }
-            }
+            rb.freezeRotation = false;
+            Destroy(gameObject, 1.5f);
         }
     }
 }
