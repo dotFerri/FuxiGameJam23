@@ -9,6 +9,7 @@ public class LeQuillotineBlade : MonoBehaviour
     public float disableTime = 5f;
     public float dropSpeed = 0.7f;
     public bool isRewinding = false;
+    public bool hitCar = false;
     private Vector3 initialPosition;
     public CarMovement CarMovement;
 
@@ -24,18 +25,25 @@ public class LeQuillotineBlade : MonoBehaviour
     {
         if (!isRewinding)
         {
-            if (other.gameObject.CompareTag("Frenchman") || other.gameObject.CompareTag("Car"))
+            if (other.gameObject.CompareTag("Frenchman"))
             {
-                Debug.Log("Drop");
+                Debug.Log("Drop blade on Frenchman");
                 StartCoroutine(BladeFall(other.gameObject));
                 isRewinding = true;
+            }
+            if (other.gameObject.CompareTag("Car"))
+            {
+                Debug.Log("Drop blade on Car");
+                StartCoroutine(BladeFall(other.gameObject));
+                isRewinding = true;
+                hitCar = true;
+
             }
 
         }
     }
     private IEnumerator BladeFall(GameObject Car)
     {
-        yield return new WaitForSeconds(0.5f);
 
         float startTime = Time.time;
         Vector3 currentPos = transform.position;
@@ -75,9 +83,12 @@ public class LeQuillotineBlade : MonoBehaviour
     }
     private void DisableGameObjectForSeconds(GameObject Car, float seconds)
     {
+        if (hitCar == true)
+        {
             CarMovement.Controllable = false;
+        }
+            StartCoroutine(EnableGameObjectDelayed(Car, seconds));
         
-        StartCoroutine(EnableGameObjectDelayed(Car, seconds));
     }
 
     private IEnumerator EnableGameObjectDelayed(GameObject Car, float seconds)
