@@ -51,6 +51,7 @@ public class FrenchmanMovement : MonoBehaviour
         {
             rb.freezeRotation = false;
             Destroy(gameObject, 1.5f);
+            Debug.Log("!!!!!!!!!!!!");
         }
     }
 }
