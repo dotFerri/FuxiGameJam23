@@ -7,9 +7,9 @@ public class CarMovement : MonoBehaviour
 
     public float movementSpeed;
     public float turnSpeed;
-    private Vector3 velocity;
+    public bool isLethal = false;    // Check to see if a collision is lethal
 
-    public bool isLethal = false;
+    private Vector3 velocity;
 
     // Update is called once per frame
     void Update()
@@ -32,19 +32,21 @@ public class CarMovement : MonoBehaviour
 
         // Turn the car
         transform.Rotate(Vector3.up, turn * turnSpeed * Time.deltaTime);
-
+    
+    
         if (velocity.magnitude > 8)
             isLethal = true;
         else
             isLethal = false;
     }
-    private void OnCollisionEnter(Collision collision)
+    
+    // Don´t really need this atm, but let´s leave this here just in case
+/*    private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Frenchman"))
         {
             Destroy(collision.gameObject);
         }
 
-    }
-
+    }*/
 }
