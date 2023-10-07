@@ -1027,8 +1027,8 @@ MonoBehaviour:
   target: {fileID: 948653935}
   minDistance: 3
   maxDistance: 40
-  maxObstacles: 235
-  obstaclesPerGeneration: 16
+  maxObstacles: 29
+  obstaclesPerGeneration: 4
 --- !u!1 &1217349314
 GameObject:
   m_ObjectHideFlags: 0
