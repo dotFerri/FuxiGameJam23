@@ -32,7 +32,7 @@ public class CarMovement : MonoBehaviour
 
         // Turn the car
         transform.Rotate(Vector3.up, turn * turnSpeed * Time.deltaTime);
-    }
+    
     
         if (velocity.magnitude > 8)
             isLethal = true;
