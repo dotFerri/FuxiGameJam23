@@ -61,11 +61,13 @@ public class LeQuillotineBlade : MonoBehaviour
         }
         // Now, you can decide whether to rewind the blade or not
         if (hitCar == false)
-        {
+        { 
+        
 			Destroy(other.gameObject, 1.5f);
 			Debug.Log("A frenchie got decapitated!");
 			StartCoroutine(RewindBlade());
         }
+            
     }
 	
     private IEnumerator BladeFallOnCar()

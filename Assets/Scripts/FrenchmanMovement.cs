@@ -53,4 +53,8 @@ public class FrenchmanMovement : MonoBehaviour
                 Debug.Log("Frenchie Decapitated");
             }
         }
+<<<<<<< Updated upstream
     }
+=======
+    }
+>>>>>>> Stashed changes
