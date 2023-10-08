@@ -42,15 +42,19 @@ public class FrenchmanMovement : MonoBehaviour
             }
             rb.velocity = directionToPlayer.normalized * movementSpeed;
         }
-
     }
-    private void OnCollisionEnter(Collision collision)
-    {
-        CarMovement car = collision.gameObject.GetComponent<CarMovement>();
-        if (car && collision.relativeVelocity.magnitude < lethalHitThreshold)
+        private void OnCollisionEnter(Collision collision)
         {
-            rb.freezeRotation = false;
-            Destroy(gameObject, 1.5f);
+            CarMovement car = collision.gameObject.GetComponent<CarMovement>();
+            if (car && collision.relativeVelocity.magnitude < lethalHitThreshold)
+            {
+                rb.freezeRotation = false;
+                Destroy(gameObject, 1.5f);
+                Debug.Log("Frenchie Decapitated");
+            }
         }
+<<<<<<< Updated upstream
     }
-}
+=======
+    }
+>>>>>>> Stashed changes
