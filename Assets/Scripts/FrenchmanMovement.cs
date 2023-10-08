@@ -6,12 +6,11 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class FrenchmanMovement : MonoBehaviour
 {
-    public float followForce = 4f;
-    public float dodgeForce = 3f;
+    public float followForce = 1f;
+    public float dodgeForce = 2f;
     public float followRadius = 30f;
-    public float dodgeRadius = 5f;
+    public float dodgeRadius = 2f;
     public float lethalHitThreshold = 8f;
-    public bool isDodging = false;
 
     private Transform player;
     private Rigidbody rb;
@@ -31,28 +30,20 @@ public class FrenchmanMovement : MonoBehaviour
             Vector3 directionToPlayer = player.position - transform.position;
             float distanceToPlayer = directionToPlayer.magnitude;
             float movementSpeed = followForce;
-            if (distanceToPlayer > followRadius && isDodging == false)
+            if (distanceToPlayer > followRadius)
             {
                 // Move at X/2 (50%) speed.
                 movementSpeed /= 2;
             }
-            else if (distanceToPlayer < dodgeRadius || isDodging == true)
+            else if (distanceToPlayer < dodgeRadius)
             {
                 // Change movement speed to the opposite direction.
-                isDodging = true;
                 movementSpeed = -dodgeForce;
-                StartCoroutine(ResetDodgingState(1f));
             }
             rb.velocity = directionToPlayer.normalized * movementSpeed;
         }
     }
-    private IEnumerator ResetDodgingState(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        isDodging = false;
-    }
-
-    private void OnCollisionEnter(Collision collision)
+        private void OnCollisionEnter(Collision collision)
         {
             CarMovement car = collision.gameObject.GetComponent<CarMovement>();
             if (car && collision.relativeVelocity.magnitude < lethalHitThreshold)
@@ -63,4 +54,6 @@ public class FrenchmanMovement : MonoBehaviour
             }
         }
     }
-    
+
+
+
