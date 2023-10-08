@@ -1,29 +1,9 @@
 fileFormatVersion: 2
-guid: 7633fbe40fc266a42890b35e6f5ff56c
+guid: 025dee5a3f5c0a84d8f8948fdfe35081
 ModelImporter:
   serializedVersion: 22103
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: brick
-    second: {fileID: 2100000, guid: 831d4ab758718b3438f154354d738550, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: glass
-    second: {fileID: 2100000, guid: fb0221510f9352a4ca64a6206543bbea, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: metal
-    second: {fileID: 2100000, guid: f2b8b846acb17db4cbbd43c4091ea5f2, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: residence_wall
-    second: {fileID: 2100000, guid: 8254fc1c3d47b8b4b9838d6275cee740, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
