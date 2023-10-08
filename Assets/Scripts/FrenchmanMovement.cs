@@ -1,128 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
-public class LeQuillotineBlade : MonoBehaviour
+
+public class FrenchmanMovement : MonoBehaviour
 {
-    public float rewindTime = 8f;
-    public float fallTime = 1f;
-    public float disableTime = 5f;
-    public float dropSpeed = 0.7f;
-    public bool isRewinding = false;
-    public bool hitCar = false;
-    private Vector3 initialPosition;
-    public CarMovement CarMovement;
+    public float followForce = 1f;
+    public float dodgeForce = 2f;
+    public float followRadius = 30f;
+    public float dodgeRadius = 2f;
+    public float lethalHitThreshold = 8f;
+
+    private Transform player;
+    private Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
     {
-        initialPosition = transform.position;
-          
-
+        rb = GetComponent<Rigidbody>();
+        player = FindObjectOfType<CarMovement>().transform;
     }
 
-    private void OnTriggerEnter(Collider other)
+    // Update is called once per frame
+    void FixedUpdate()
     {
-        if (!isRewinding)
+        if (player)
         {
-            if (other.gameObject.CompareTag("Frenchman"))
+            Vector3 directionToPlayer = player.position - transform.position;
+            float distanceToPlayer = directionToPlayer.magnitude;
+            float movementSpeed = followForce;
+            if (distanceToPlayer > followRadius)
             {
-                Debug.Log("Drop blade on Frenchman");
-                StartCoroutine(BladeFallOnFrenchman(other));
-                isRewinding = true;
+                // Move at X/2 (50%) speed.
+                movementSpeed /= 2;
             }
-            else if (other.gameObject.CompareTag("Car"))
+            else if (distanceToPlayer < dodgeRadius)
             {
-                Debug.Log("Drop blade on Car");
-                StartCoroutine(BladeFallOnCar());
-                isRewinding = true;
-                hitCar = true;
-
+                // Change movement speed to the opposite direction.
+                movementSpeed = -dodgeForce;
             }
-
+            rb.velocity = directionToPlayer.normalized * movementSpeed;
         }
     }
-	private IEnumerator BladeFallOnFrenchman(Collider other)
-    {
-        // Handle blade fall on Frenchman
-        // You can add logic specific to Frenchman here
-
-        yield return new WaitForSeconds(1.5f);
-
-		float startTime = Time.time;
-        Vector3 currentPos = transform.position;
-        Vector3 endPos = new Vector3(transform.position.x,dropSpeed,transform.position.z);
-
-        while (Time.time - startTime < fallTime)
+        private void OnCollisionEnter(Collision collision)
         {
-            float t = (Time.time - startTime) / fallTime;
-            transform.position = Vector3.Lerp(currentPos, endPos, t);
-            yield return null;
+            CarMovement car = collision.gameObject.GetComponent<CarMovement>();
+            if (car && collision.relativeVelocity.magnitude < lethalHitThreshold)
+            {
+                rb.freezeRotation = false;
+                Destroy(gameObject, 1.5f);
+                Debug.Log("Frenchie Decapitated");
+            }
         }
-
-			Destroy(other.gameObject, 1.5f);
-			Debug.Log("A frenchie got decapitated!");
-			StartCoroutine(RewindBlade());
     }
-	
-    private IEnumerator BladeFallOnCar()
-    {
-		if (CarMovement == null)
-		{
-			yield break;
-		}
-        float startTime = Time.time;
-        Vector3 currentPos = transform.position;
-        Vector3 endPos = new Vector3(transform.position.x,dropSpeed,transform.position.z);
-
-        while (Time.time - startTime < fallTime)
-        {
-            float t = (Time.time - startTime) / fallTime;
-            transform.position = Vector3.Lerp(currentPos, endPos, t);
-            yield return null;
-        }
-//        Debug.Log("Blade is falling...");
-        yield return new WaitForSeconds(0.5f);
-        DisableGameObjectForSeconds(CarMovement.gameObject, disableTime);
-        StartCoroutine(RewindBlade());
-    }
-
-    private IEnumerator RewindBlade()
-    {
-        yield return new WaitForSeconds(3f);
-
-        float startTime = Time.time;
-        Vector3 currentPos = transform.position;
-
-
-        while (Time.time - startTime < rewindTime)
-        {
-           float t = (Time.time - startTime) / rewindTime;
-            transform.position = Vector3.Lerp(currentPos, initialPosition, t);
-            yield return null;
-        }
-        transform.position = initialPosition;
-        isRewinding = false;
-        Debug.Log("Blade is rewinding...");
-        yield return new WaitForSeconds(0.5f);
-        isRewinding = false;
-    }
-    private void DisableGameObjectForSeconds(GameObject Car, float seconds)
-    {
-        if (hitCar == true)
-        {
-            CarMovement.Controllable = false;
-			        Debug.Log("Disable car controls for 5 seconds.");
-
-        }
-            StartCoroutine(EnableGameObjectDelayed(Car, seconds));
-    }
-
-    private IEnumerator EnableGameObjectDelayed(GameObject Car, float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        CarMovement.Controllable = true;
-        Debug.Log("Re-enable car controls.");
-
-    }
-}
