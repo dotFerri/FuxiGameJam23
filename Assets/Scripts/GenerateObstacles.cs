@@ -64,7 +64,11 @@ public class GenerateObstacles : MonoBehaviour
                     //  position.y += yOffset;
                     position.y = target.position.y; // Set Y within a range
                 } while (Vector3.Distance(position, target.position) < minDistance && --maxGenerationAttempts >= 0);
-                GameObject instance = Instantiate(original, position, Quaternion.LookRotation(target.position - position));
+                //               GameObject instance = Instantiate(original, position, Quaternion.LookRotation(target.position - position));
+                Vector3 directionToTarget = target.position - position;
+                directionToTarget.y = 0f; // Ensure the rotation is horizontal
+                Quaternion rotation = Quaternion.LookRotation(directionToTarget);
+                GameObject instance = Instantiate(original, position, rotation);
                 obstacleInstances.Add(instance);
             }
 
