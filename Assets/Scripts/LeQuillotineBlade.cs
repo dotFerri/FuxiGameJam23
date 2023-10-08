@@ -28,13 +28,13 @@ public class LeQuillotineBlade : MonoBehaviour
             if (other.gameObject.CompareTag("Frenchman"))
             {
                 Debug.Log("Drop blade on Frenchman");
-                StartCoroutine(BladeFall(other.gameObject));
+                StartCoroutine(BladeFallOnFrenchman(other));
                 isRewinding = true;
             }
             else if (other.gameObject.CompareTag("Car"))
             {
                 Debug.Log("Drop blade on Car");
-                StartCoroutine(BladeFall(other.gameObject));
+                StartCoroutine(BladeFallOnCar());
                 isRewinding = true;
                 hitCar = true;
 
@@ -42,9 +42,38 @@ public class LeQuillotineBlade : MonoBehaviour
 
         }
     }
-    private IEnumerator BladeFall(GameObject Car)
+	private IEnumerator BladeFallOnFrenchman(Collider other)
     {
+        // Handle blade fall on Frenchman
+        // You can add logic specific to Frenchman here
 
+        yield return new WaitForSeconds(1.5f);
+
+		float startTime = Time.time;
+        Vector3 currentPos = transform.position;
+        Vector3 endPos = new Vector3(transform.position.x,dropSpeed,transform.position.z);
+
+        while (Time.time - startTime < fallTime)
+        {
+            float t = (Time.time - startTime) / fallTime;
+            transform.position = Vector3.Lerp(currentPos, endPos, t);
+            yield return null;
+        }
+        // Now, you can decide whether to rewind the blade or not
+        if (hitCar == false)
+        {
+			Destroy(other.gameObject, 1.5f);
+			Debug.Log("A frenchie got decapitated!");
+			StartCoroutine(RewindBlade());
+        }
+    }
+	
+    private IEnumerator BladeFallOnCar()
+    {
+		if (CarMovement == null)
+		{
+			yield break;
+		}
         float startTime = Time.time;
         Vector3 currentPos = transform.position;
         Vector3 endPos = new Vector3(transform.position.x,dropSpeed,transform.position.z);
@@ -55,9 +84,9 @@ public class LeQuillotineBlade : MonoBehaviour
             transform.position = Vector3.Lerp(currentPos, endPos, t);
             yield return null;
         }
-        Debug.Log("Blade is falling...");
+//        Debug.Log("Blade is falling...");
         yield return new WaitForSeconds(0.5f);
-        DisableGameObjectForSeconds(Car, disableTime);
+        DisableGameObjectForSeconds(CarMovement.gameObject, disableTime);
         StartCoroutine(RewindBlade());
     }
 
@@ -86,15 +115,17 @@ public class LeQuillotineBlade : MonoBehaviour
         if (hitCar == true)
         {
             CarMovement.Controllable = false;
+			        Debug.Log("Disable car controls for 5 seconds.");
+
         }
             StartCoroutine(EnableGameObjectDelayed(Car, seconds));
-        
     }
 
     private IEnumerator EnableGameObjectDelayed(GameObject Car, float seconds)
     {
         yield return new WaitForSeconds(seconds);
         CarMovement.Controllable = true;
+        Debug.Log("Re-enable car controls.");
 
     }
 }
