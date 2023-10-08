@@ -68,7 +68,6 @@ MonoBehaviour:
   followRadius: 30
   dodgeRadius: 5
   lethalHitThreshold: 100
-  isDodging: 0
 --- !u!65 &1168689860932769805
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -90,6 +89,10 @@ PrefabInstance:
     serializedVersion: 2
     m_TransformParent: {fileID: 6938335730000272502}
     m_Modifications:
+    - target: {fileID: 2575986120382128808, guid: 13be441c88aaf214d9d58cacd9ccbee0, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dd5272fc1105bb145a9be360cc7b8d38, type: 2}
     - target: {fileID: 3743777061276834247, guid: 13be441c88aaf214d9d58cacd9ccbee0, type: 3}
       propertyPath: m_RootOrder
       value: -1
